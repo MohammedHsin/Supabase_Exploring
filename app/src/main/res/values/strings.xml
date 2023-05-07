@@ -1,0 +1,5 @@
+<resources>
+    <string name="app_name">Supabase exploring</string>
+    <string name="supabaseUrl">https://wpnzhaybebonlogjwsgg.supabase.co</string>
+    <string name="supabaseKey">eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6IndwbnpoYXliZWJvbmxvZ2p3c2dnIiwicm9sZSI6ImFub24iLCJpYXQiOjE2ODMzODk4MTcsImV4cCI6MTk5ODk2NTgxN30.-GBqAmzJIA7p4Tl2m3TrWSojfaJWqQrJp_bVTvnTzrw</string>
+</resources>
