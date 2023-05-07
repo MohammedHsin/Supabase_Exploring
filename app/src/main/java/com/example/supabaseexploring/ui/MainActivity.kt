@@ -10,6 +10,7 @@ import androidx.compose.material.Surface
 import androidx.compose.ui.Modifier
 import androidx.lifecycle.lifecycleScope
 import com.example.supabaseexploring.data.model.User
+import com.example.supabaseexploring.presentation.login.LoginScreen
 import com.example.supabaseexploring.ui.theme.SupabaseExploringTheme
 import dagger.hilt.android.AndroidEntryPoint
 import io.github.jan.supabase.SupabaseClient
@@ -36,6 +37,7 @@ class MainActivity : ComponentActivity() {
                     color = MaterialTheme.colors.background
                 ) {
 
+                    LoginScreen()
                 }
             }
         }
