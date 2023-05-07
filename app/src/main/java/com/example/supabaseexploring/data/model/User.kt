@@ -1,4 +1,4 @@
-package com.example.supabaseexploring
+package com.example.supabaseexploring.data.model
 
 
 @kotlinx.serialization.Serializable
