@@ -6,8 +6,8 @@ import androidx.compose.runtime.getValue
 
 //fun LoginScreen(viewModel: LoginViewModel) {
 //    val loginState by viewModel.loginState.collectAsState()
-//    LaunchedEffect(key1 = loginState) {
-//        if (loginState is UIState.Success) navigateToWelcomeScreen()
+//    launchedeffect(key1 = loginstate) {
+//        if (loginstate is uistate.success) navigatetowelcomescreen()
 //    }
 //    LoginScreenUI(loginState) { username, password -> viewModel.performLogin(username, password) }
 //}
