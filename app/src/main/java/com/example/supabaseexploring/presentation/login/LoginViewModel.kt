@@ -2,12 +2,24 @@ package com.example.supabaseexploring.presentation.login
 
 import android.util.Log
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
+import com.example.supabaseexploring.data.remote.Signup
+import com.example.supabaseexploring.di.GoTrueSupabaseClient
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import com.example.supabaseexploring.presentation.login.UIState
+import dagger.hilt.android.lifecycle.HiltViewModel
+import io.github.jan.supabase.SupabaseClient
+import io.github.jan.supabase.gotrue.gotrue
+import io.github.jan.supabase.gotrue.providers.builtin.Email
+import kotlinx.coroutines.launch
+import javax.inject.Inject
 
-class LoginViewModel : ViewModel(){
+@HiltViewModel
+class LoginViewModel @Inject constructor(
+    private val signup: Signup
+) : ViewModel(){
     private val _LoginUIState = MutableStateFlow<UIState>(UIState.Idle)
     val LoginUIState = _LoginUIState.asStateFlow()
 
@@ -37,16 +49,18 @@ class LoginViewModel : ViewModel(){
 
 
 
-    fun performLogin(email : String , password : String){
+    fun performLogin(userEmail : String , userPassword : String){
         //todo
-        Log.d("hello", "performLogin: $email , $password")
     }
 
 
 
-    fun performSignUp(email : String ,username : String , password : String){
+    fun performSignUp(userEmail : String ,username : String , userPassword : String) {
         //todo
-        Log.d("hello", "performSignup: $email ,$username ,  $password")
-    }
 
+        viewModelScope.launch {
+            signup.signup(userEmail , userPassword)
+        }
+
+    }
 }

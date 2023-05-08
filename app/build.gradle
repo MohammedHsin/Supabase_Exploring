@@ -65,6 +65,7 @@ dependencies {
     debugImplementation "androidx.compose.ui:ui-test-manifest:$compose_ui_version"
 
     implementation("io.github.jan-tennert.supabase:postgrest-kt:0.9.5")
+    implementation("io.github.jan-tennert.supabase:gotrue-kt:1.0.0-alpha-2")
 
     //add ktor client engine (if you don't already have one, see https://ktor.io/docs/http-client-engines.html for all engines)
     //e.g. the CIO engine

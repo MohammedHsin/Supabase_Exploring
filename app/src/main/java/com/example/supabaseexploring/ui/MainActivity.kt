@@ -10,6 +10,7 @@ import androidx.compose.material.Surface
 import androidx.compose.ui.Modifier
 import androidx.lifecycle.lifecycleScope
 import com.example.supabaseexploring.data.model.User
+import com.example.supabaseexploring.di.PostgrestSupabaseClient
 import com.example.supabaseexploring.presentation.login.Login
 import com.example.supabaseexploring.presentation.login.Screen
 import com.example.supabaseexploring.ui.theme.SupabaseExploringTheme
@@ -22,14 +23,10 @@ import javax.inject.Inject
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
 
-    @Inject
-    lateinit var client : SupabaseClient
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        lifecycleScope.launch {
-            getData()
-        }
+
+
         setContent {
             SupabaseExploringTheme {
                 // A surface container using the 'background' color from the theme
@@ -42,12 +39,6 @@ class MainActivity : ComponentActivity() {
                 }
             }
         }
-    }
-
-    private suspend fun getData(){
-//            val supabaseResponse = client.postgrest["users"].select()
-//            val data = supabaseResponse.decodeList<User>()
-//            Log.d("hello", data.toString())
     }
 
 }
