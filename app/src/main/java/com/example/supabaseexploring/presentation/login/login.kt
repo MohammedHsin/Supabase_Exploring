@@ -1,10 +1,16 @@
 package com.example.supabaseexploring.presentation.login
 
+import android.util.Log
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.*
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Email
+import androidx.compose.material.icons.filled.Home
+import androidx.compose.material.icons.filled.Lock
+import androidx.compose.material.icons.filled.Person
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -23,17 +29,28 @@ import kotlinx.coroutines.flow.MutableStateFlow
 fun Login(viewModel: LoginViewModel = hiltViewModel()) {
 
 
-
-
     val loginUIState by viewModel.LoginUIState.collectAsState()
     val loginState by viewModel.loginState.collectAsState()
 
 
 
 
-    LaunchedEffect(key1 = loginUIState){
-        if(loginUIState is UIState.Success){
-            //todo navigate
+    LaunchedEffect(key1 = loginUIState) {
+        when (loginUIState) {
+
+            is UIState.Idle ->{
+                Log.d("hello", "nothing ..")
+            }
+
+            is UIState.Success -> {
+                Log.d("hello", "you sign up !")
+            }
+            is UIState.Loading ->{
+                Log.d("hello", "Loading ...")
+            }
+            is UIState.Error ->{
+                Log.d("hello", (loginUIState as UIState.Error).message.toString())
+            }
         }
     }
 
@@ -65,10 +82,16 @@ fun Login(viewModel: LoginViewModel = hiltViewModel()) {
                         // Add a text field for the username
                         OutlinedTextField(
                             value = loginState.email, // TODO: use a state variable to store and update the value
-                            onValueChange = {viewModel.onEmailChange(it)}, // TODO: use a lambda to update the value
+                            onValueChange = { viewModel.onEmailChange(it) }, // TODO: use a lambda to update the value
                             label = { Text(text = "Email") }, // Add a label for the text field
                             singleLine = true, // Limit the input to one line
-                            modifier = Modifier.fillMaxWidth() // Make the text field fill the available width
+                            modifier = Modifier.fillMaxWidth(), // Make the text field fill the available width
+                            leadingIcon = {
+                                Icon(
+                                    imageVector = Icons.Default.Email,
+                                    contentDescription = ""
+                                )
+                            }
                         )
 
 
@@ -76,11 +99,17 @@ fun Login(viewModel: LoginViewModel = hiltViewModel()) {
                         AnimatedVisibility(visible = !loginState.login) {
                             OutlinedTextField(
                                 value = loginState.username, // TODO: use a state variable to store and update the value
-                                onValueChange = {viewModel.onUsernameChange(it)}, // TODO: use a lambda to update the value
+                                onValueChange = { viewModel.onUsernameChange(it) }, // TODO: use a lambda to update the value
                                 label = { Text(text = "Username") }, // Add a label for the text field
                                 singleLine = true, // Limit the input to one line
                                 modifier = Modifier.fillMaxWidth(),
-                                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email)
+                                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email),
+                                leadingIcon = {
+                                    Icon(
+                                        imageVector = Icons.Default.Person,
+                                        contentDescription = ""
+                                    )
+                                }
                             )
                         }
 
@@ -88,21 +117,31 @@ fun Login(viewModel: LoginViewModel = hiltViewModel()) {
                         // Add a text field for the password
                         OutlinedTextField(
                             value = loginState.password, // TODO: use a state variable to store and update the value
-                            onValueChange = {viewModel.onPasswordChange(it)}, // TODO: use a lambda to update the value
+                            onValueChange = { viewModel.onPasswordChange(it) }, // TODO: use a lambda to update the value
                             label = { Text(text = "Password") }, // Add a label for the text field
                             singleLine = true, // Limit the input to one line
                             modifier = Modifier.fillMaxWidth(), // Make the text field fill the available width
                             visualTransformation = PasswordVisualTransformation(), // Hide the password characters
-                            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password) // Use a password keyboard type
+                            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password), // Use a password keyboard type
+                            leadingIcon = {
+                                Icon(
+                                    imageVector = Icons.Default.Lock,
+                                    contentDescription = ""
+                                )
+                            }
                         )
                         // Add a button for login
                         Button(
                             onClick = {
-                                      if(loginState.login){
-                                          viewModel.performLogin(loginState.email , loginState.password)
-                                      } else {
-                                          viewModel.performSignUp(loginState.email , loginState.username , loginState.password)
-                                      }
+                                if (loginState.login) {
+                                    viewModel.performLogin(loginState.email, loginState.password)
+                                } else {
+                                    viewModel.performSignUp(
+                                        loginState.email,
+                                        loginState.username,
+                                        loginState.password
+                                    )
+                                }
                             }, // TODO: use a lambda to handle the login logic
                             colors = ButtonDefaults.buttonColors(backgroundColor = MaterialTheme.colors.primary), // Use the secondary color for the button background
                             modifier = Modifier.width(100.dp) // Make the button fill the available width
@@ -132,3 +171,4 @@ fun Login(viewModel: LoginViewModel = hiltViewModel()) {
     }
 
 }
+
