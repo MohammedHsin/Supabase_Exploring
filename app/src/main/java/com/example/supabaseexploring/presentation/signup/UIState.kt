@@ -1,4 +1,4 @@
-package com.example.supabaseexploring.presentation.login
+package com.example.supabaseexploring.presentation.signup
 
 sealed class UIState {
     object Idle : UIState()

@@ -1,30 +1,22 @@
-package com.example.supabaseexploring.presentation.login
+package com.example.supabaseexploring.presentation.signup
 
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.supabaseexploring.common.Resource
-import com.example.supabaseexploring.data.remote.Signup
 import com.example.supabaseexploring.data.repository.SignupRepo
-import com.example.supabaseexploring.di.GoTrueSupabaseClient
-import com.example.supabaseexploring.presentation.login.UIState
 import dagger.hilt.android.lifecycle.HiltViewModel
-import io.github.jan.supabase.SupabaseClient
-import io.github.jan.supabase.gotrue.gotrue
-import io.github.jan.supabase.gotrue.providers.builtin.Email
 import kotlinx.coroutines.flow.*
-import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-class LoginViewModel @Inject constructor(
+class SignupViewModel @Inject constructor(
     private val signupRepo: SignupRepo
 ) : ViewModel(){
     private val _LoginUIState = MutableStateFlow<UIState>(UIState.Idle)
     val LoginUIState = _LoginUIState.asStateFlow()
 
 
-    private val _loginState = MutableStateFlow<LoginState>(LoginState())
+    private val _loginState = MutableStateFlow<SignupState>(SignupState())
     val loginState = _loginState.asStateFlow()
 
 

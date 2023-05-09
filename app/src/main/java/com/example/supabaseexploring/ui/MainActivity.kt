@@ -1,24 +1,15 @@
 package com.example.supabaseexploring.ui
 
 import android.os.Bundle
-import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
 import androidx.compose.ui.Modifier
-import androidx.lifecycle.lifecycleScope
-import com.example.supabaseexploring.data.model.User
-import com.example.supabaseexploring.di.PostgrestSupabaseClient
-import com.example.supabaseexploring.presentation.login.Login
-import com.example.supabaseexploring.presentation.login.Screen
+import com.example.supabaseexploring.presentation.newLogin.RegisterPage
 import com.example.supabaseexploring.ui.theme.SupabaseExploringTheme
 import dagger.hilt.android.AndroidEntryPoint
-import io.github.jan.supabase.SupabaseClient
-import io.github.jan.supabase.postgrest.postgrest
-import kotlinx.coroutines.launch
-import javax.inject.Inject
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
@@ -35,7 +26,7 @@ class MainActivity : ComponentActivity() {
                     color = MaterialTheme.colors.background
                 ) {
 
-                    Login()
+                    RegisterPage()
                 }
             }
         }
