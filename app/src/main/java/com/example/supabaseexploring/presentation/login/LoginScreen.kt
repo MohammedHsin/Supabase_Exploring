@@ -1,6 +1,7 @@
 package com.example.supabaseexploring.presentation.login
 
 
+import android.util.Log
 import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -25,6 +26,7 @@ import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.example.supabaseexploring.R
+import com.example.supabaseexploring.common.UIState
 import com.example.supabaseexploring.ui.theme.primaryColor
 import com.example.supabaseexploring.ui.theme.whiteBackground
 
@@ -39,6 +41,23 @@ fun LoginPage(
     val loginState by viewModel.loginState.collectAsState()
     val loginUIState by viewModel.loginUIState.collectAsState()
 
+
+    LaunchedEffect(key1 = loginUIState){
+        when(loginUIState){
+            is UIState.Idle ->{
+                Log.d("hello", "LoginPage: nothing")
+            }
+            is UIState.Loading ->{
+                Log.d("hello", "LoginPage: loading")
+            }
+            is UIState.Error ->{
+                Log.d("hello", "LoginPage: ${(loginUIState as UIState.Error).message.toString()}")
+            }
+            is UIState.Success ->{
+                Log.d("hello", "LoginPage: ${(loginUIState as UIState.Success).data.toString()}")
+            }
+        }
+    }
 
 
     val image = painterResource(id = R.drawable.login_image)
@@ -120,7 +139,12 @@ fun LoginPage(
 
                 Spacer(modifier = Modifier.padding(10.dp))
                 Button(
-                    onClick = {},
+                    onClick = {
+                              viewModel.onPerformLogin(
+                                  loginState.email,
+                                  loginState.password
+                              )
+                    },
                     modifier = Modifier
                         .fillMaxWidth(0.8f)
                         .height(50.dp)

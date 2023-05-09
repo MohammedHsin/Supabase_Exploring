@@ -1,6 +1,8 @@
 package com.example.supabaseexploring.di
 
+import com.example.supabaseexploring.data.remote.Login
 import com.example.supabaseexploring.data.remote.Signup
+import com.example.supabaseexploring.data.repository.LoginRepo
 import com.example.supabaseexploring.data.repository.SignupRepo
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -47,10 +49,26 @@ object Module {
         return Signup(client)
     }
 
+
+    @Provides
+    @Singleton
+    fun provideLogin(@GoTrueSupabaseClient client : SupabaseClient) : Login{
+        return Login(client)
+    }
+
+
+
     @Provides
     @Singleton
     fun provideSignupRepo(signup: Signup) : SignupRepo{
             return SignupRepo(signup)
+    }
+
+
+    @Provides
+    @Singleton
+    fun provideLoginRepo(login: Login) : LoginRepo{
+        return LoginRepo(login)
     }
 
 

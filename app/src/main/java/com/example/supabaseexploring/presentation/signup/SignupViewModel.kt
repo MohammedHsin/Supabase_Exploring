@@ -1,5 +1,6 @@
 package com.example.supabaseexploring.presentation.signup
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.supabaseexploring.common.Resource
@@ -48,6 +49,7 @@ class SignupViewModel @Inject constructor(
 
 
            signupRepo(userEmail , userPassword).onEach {result->
+
                when(result){
                    is Resource.Error->{
                        _signupUIState.value = UIState.Error(result.message)
@@ -59,7 +61,7 @@ class SignupViewModel @Inject constructor(
                        _signupUIState.value = UIState.Success(result.data)
                    }
                }
-           }.launchIn(viewModelScope) // do not forget to add this in the login viewmodel as well !!!!!!!!!!!!!!!!!!!!!!!!
+           }.launchIn(viewModelScope)
 
 
     }
