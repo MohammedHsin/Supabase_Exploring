@@ -20,22 +20,23 @@ import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.navigation.NavHostController
 import com.example.supabaseexploring.presentation.signup.SignupViewModel
-import com.example.supabaseexploring.presentation.signup.UIState
+import com.example.supabaseexploring.common.UIState
 import com.example.supabaseexploring.ui.theme.primaryColor
 import com.example.supabaseexploring.ui.theme.whiteBackground
 
 @Composable
-fun RegisterPage(
-//    navController: NavController
+fun SignupScreen(
+    navController: NavHostController,
 viewModel: SignupViewModel = hiltViewModel()
 ) {
 
-    val loginState by viewModel.loginState.collectAsState()
-    val loginUIState by viewModel.LoginUIState.collectAsState()
+    val signupState by viewModel.signupState.collectAsState()
+    val signupUIState by viewModel.signupUIState.collectAsState()
 
-    LaunchedEffect(key1 = loginUIState) {
-        when (loginUIState) {
+    LaunchedEffect(key1 = signupUIState) {
+        when (signupUIState) {
 
             is UIState.Idle ->{
                 Log.d("hello", "nothing ..")
@@ -48,18 +49,12 @@ viewModel: SignupViewModel = hiltViewModel()
                 Log.d("hello", "Loading ...")
             }
             is UIState.Error ->{
-                Log.d("hello", (loginUIState as UIState.Error).message.toString())
+                Log.d("hello", (signupUIState as UIState.Error).message.toString())
             }
         }
     }
 
     val image = painterResource(id = R.drawable.register_page)
-
-    val nameValue = remember { mutableStateOf("") }
-//    val emailValue = remember { mutableStateOf("") }
-    val phoneValue = remember { mutableStateOf("") }
-//    val passwordValue = remember { mutableStateOf("") }
-    val confirmPasswordValue = remember { mutableStateOf("") }
 
     val passwordVisibility = remember { mutableStateOf(false) }
     val confirmPasswordVisibility = remember { mutableStateOf(false) }
@@ -98,16 +93,16 @@ viewModel: SignupViewModel = hiltViewModel()
                 Spacer(modifier = Modifier.padding(10.dp))
                 Column(horizontalAlignment = Alignment.CenterHorizontally) {
                     OutlinedTextField(
-                        value = nameValue.value,
-                        onValueChange = { nameValue.value = it },
-                        label = { Text(text = "Name") },
-                        placeholder = { Text(text = "Name") },
+                        value = signupState.username,
+                        onValueChange = { viewModel.onUsernameChange(it) },
+                        label = { Text(text = "Username") },
+                        placeholder = { Text(text = "Username") },
                         singleLine = true,
                         modifier = Modifier.fillMaxWidth(0.8f)
                     )
 
                     OutlinedTextField(
-                        value = loginState.email,
+                        value = signupState.email,
                         onValueChange = {viewModel.onEmailChange(it)},
                         label = { Text(text = "Email Address") },
                         placeholder = { Text(text = "Email Address") },
@@ -118,7 +113,7 @@ viewModel: SignupViewModel = hiltViewModel()
 
 
                     OutlinedTextField(
-                        value = loginState.password,
+                        value = signupState.password,
                         onValueChange = { viewModel.onPasswordChange(it) },
                         label = { Text(text = "Password") },
                         placeholder = { Text(text = "Password") },
@@ -139,8 +134,8 @@ viewModel: SignupViewModel = hiltViewModel()
                     )
 
                     OutlinedTextField(
-                        value = confirmPasswordValue.value,
-                        onValueChange = { confirmPasswordValue.value = it },
+                        value = signupState.confirmPassword,
+                        onValueChange = { viewModel.onConfirmPasswordChange(it) },
                         label = { Text(text = "Confirm Password") },
                         placeholder = { Text(text = "Confirm Password") },
                         singleLine = true,
@@ -161,9 +156,9 @@ viewModel: SignupViewModel = hiltViewModel()
                     )
                     Spacer(modifier = Modifier.padding(10.dp))
                     Button(onClick = {
-                                     viewModel.performSignUp(loginState.email,
-                                     loginState.username,
-                                     loginState.password)
+                                     viewModel.performSignUp(signupState.email,
+                                     signupState.username,
+                                     signupState.password)
                     }, modifier = Modifier
                         .fillMaxWidth(0.8f)
                         .height(50.dp)) {
@@ -173,10 +168,12 @@ viewModel: SignupViewModel = hiltViewModel()
                     Text(
                         text = "Login Instead",
                         modifier = Modifier.clickable(onClick = {
-//                            navController.navigate("login_page"){
-//                                popUpTo = navController.graph.startDestination
-//                                launchSingleTop = true
-//                            }
+
+                            navController.navigate("login"){
+                                launchSingleTop = true
+                            }
+
+
                         }
                         )
                     )
