@@ -13,10 +13,11 @@ class Signup @Inject constructor(
 ){
 
     suspend fun signup(userEmail : String , userPassword : String) : SessionStatus{
-            goTrueClient.gotrue.signUpWith(Email){
+        goTrueClient.gotrue.signUpWith(Email){
                 email = userEmail
                 password = userPassword
             }
+
         return goTrueClient.gotrue.sessionStatus.value
 }
 }

@@ -2,6 +2,7 @@ package com.example.supabaseexploring.presentation.login
 
 
 import android.util.Log
+import android.widget.Toast
 import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -29,6 +30,7 @@ import com.example.supabaseexploring.R
 import com.example.supabaseexploring.common.UIState
 import com.example.supabaseexploring.ui.theme.primaryColor
 import com.example.supabaseexploring.ui.theme.whiteBackground
+import io.github.jan.supabase.gotrue.gotrue
 
 
 @Composable
@@ -44,6 +46,7 @@ fun LoginPage(
 
     LaunchedEffect(key1 = loginUIState){
         when(loginUIState){
+
             is UIState.Idle ->{
                 Log.d("hello", "LoginPage: nothing")
             }
@@ -56,6 +59,13 @@ fun LoginPage(
             is UIState.Success ->{
                 Log.d("hello", "LoginPage: ${(loginUIState as UIState.Success).data.toString()}")
             }
+        }
+    }
+
+    LaunchedEffect(key1 = viewModel.goTrueClient){
+
+        if (viewModel.goTrueClient.gotrue.sessionStatus.value.toString().substring(0 ,13) == "Authenticated"){
+            Log.d("hello", "LoginPage: You are in ")
         }
     }
 
@@ -162,6 +172,12 @@ fun LoginPage(
                     })
                 )
                 Spacer(modifier = Modifier.padding(20.dp))
+
+                Button(onClick = {
+                    Log.d("hello", viewModel.isAuthenticated().toString())
+                }) {
+                    Text(text = "check authentication")
+                }
             }
 
 
