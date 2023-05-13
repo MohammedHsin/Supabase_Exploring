@@ -1,60 +1,106 @@
 package com.example.supabaseexploring.presentation.onboarding
 
-import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.foundation.background
+import androidx.compose.animation.*
+import androidx.compose.animation.AnimatedContentScope.SlideDirection.Companion.End
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.layout.*
-import androidx.compose.material.Button
-import androidx.compose.material.Text
-import androidx.compose.material.TextField
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
 
 
 @Composable
-@Preview(showBackground = true)
-fun OnBoardingScreen(){
-    var state by remember {
-        mutableStateOf(true)
-    }
+fun OnBoardingScreen(
+    viewModel: OnBoardingViewModel = hiltViewModel()
+) {
 
 
-    Box(modifier = Modifier.fillMaxSize() , contentAlignment = Alignment.Center) {
-
-        Column {
+    val state by viewModel.state.collectAsState()
 
 
-        Row() {
 
 
-            AnimatedVisibility(visible = state) {
-                Column(modifier = Modifier.background(Color.Red)) {
-                    Text(text = "Welcome to screen one !!")
-                    TextField(value = "this is text one", onValueChange = {})
-                }
-            }
+    Column(
+        verticalArrangement = Arrangement.Center,
+        horizontalAlignment = Alignment.CenterHorizontally, modifier = Modifier.fillMaxSize()
+    ) {
 
-            AnimatedVisibility(visible = !state) {
-                Column(modifier = Modifier.background(Color.Blue)) {
-                    Text(text = "This is the second screen ")
-                    TextField(value = "this is text tow", onValueChange = {})
 
-                }
+        AnimatedVisibility(visible = state.page == 0) {
+            Text(
+                text = "Welcome to the club! Now let's continue building you profile ..",
+                fontSize = 30.sp, textAlign = TextAlign.Center, modifier = Modifier
+                    .padding(30.dp)
+            )
+        }
+
+        AnimatedVisibility(visible = state.page == 1) {
+
+            Column(
+                verticalArrangement = Arrangement.Center,
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                Text(
+                    text = "What do they call you?", fontWeight = FontWeight.SemiBold,
+                    fontSize = 40.sp, textAlign = TextAlign.Center
+                )
+                Spacer(modifier = Modifier.height(20.dp))
+                OutlinedTextField(
+                    value = state.name,
+                    onValueChange = {
+                        viewModel.onNameChange(it)
+                    },
+                    shape = RoundedCornerShape(14.dp),
+                )
             }
 
         }
 
 
-
-
-
-            Spacer(modifier = Modifier.height(20.dp))
-            Button(onClick = { state = !state }) {
-                Text(text = "switch")
+        AnimatedVisibility(visible = state.page == 2) {
+            Column(
+                verticalArrangement = Arrangement.Center,
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                Text(
+                    text = "How old are you?", fontWeight = FontWeight.SemiBold,
+                    fontSize = 40.sp, textAlign = TextAlign.Center
+                )
+                Spacer(modifier = Modifier.height(20.dp))
+                OutlinedTextField(
+                    value = state.age.toString(),
+                    onValueChange = { viewModel.onAgeChange((if (it != "") it else 0).toString().toInt())},
+                    shape = RoundedCornerShape(14.dp)
+                )
             }
         }
+
+
+
+        Spacer(modifier = Modifier.height(20.dp))
+        Row(
+            horizontalArrangement = Arrangement.End, modifier = Modifier
+                .fillMaxWidth()
+                .padding(end = 53.dp)
+        ) {
+
+            Button(
+                onClick = { viewModel.onPageChange() }, shape = RoundedCornerShape(14.dp)
+            ) {
+                Text(text = "Next", fontSize = 18.sp)
+            }
+
+        }
     }
+
+
 }
+

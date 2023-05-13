@@ -8,6 +8,7 @@ import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
 import androidx.compose.ui.Modifier
 import com.example.supabaseexploring.presentation.navigation.MyApp
+import com.example.supabaseexploring.presentation.onboarding.OnBoardingScreen
 import com.example.supabaseexploring.ui.theme.SupabaseExploringTheme
 import dagger.hilt.android.AndroidEntryPoint
 import io.github.jan.supabase.SupabaseClient
@@ -26,7 +27,7 @@ class MainActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colors.background
                 ) {
-                    MyApp()
+                    OnBoardingScreen()
 
                 }
             }
