@@ -10,6 +10,7 @@ import com.example.supabaseexploring.di.GoTrueSupabaseClient
 import dagger.hilt.android.lifecycle.HiltViewModel
 import io.github.jan.supabase.SupabaseClient
 import io.github.jan.supabase.gotrue.gotrue
+import io.github.jan.supabase.gotrue.user.UserInfo
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.launchIn
@@ -29,10 +30,13 @@ class LoginViewModel @Inject constructor(
     val loginState = _loginState.asStateFlow()
 
 
-    fun isAuthenticated() : Boolean{
-        return goTrueClient.gotrue.sessionStatus.value.toString().substring(0 ,13) == "Authenticated"
-    }
 
+
+
+
+    fun getUserIfAny() : UserInfo?{
+        return goTrueClient.gotrue.currentSessionOrNull()?.user
+    }
 
     fun onEmailChange(newEmail : String){
         _loginState.value = _loginState.value.copy(email = newEmail)

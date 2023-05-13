@@ -8,9 +8,10 @@ import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
 import androidx.compose.ui.Modifier
 import com.example.supabaseexploring.presentation.navigation.MyApp
-import com.example.supabaseexploring.presentation.newLogin.SignupScreen
 import com.example.supabaseexploring.ui.theme.SupabaseExploringTheme
 import dagger.hilt.android.AndroidEntryPoint
+import io.github.jan.supabase.SupabaseClient
+import io.github.jan.supabase.createSupabaseClient
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
@@ -26,6 +27,7 @@ class MainActivity : ComponentActivity() {
                     color = MaterialTheme.colors.background
                 ) {
                     MyApp()
+
                 }
             }
         }

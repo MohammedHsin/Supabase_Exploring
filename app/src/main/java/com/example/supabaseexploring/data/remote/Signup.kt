@@ -4,6 +4,7 @@ import android.util.Log
 import com.example.supabaseexploring.di.GoTrueSupabaseClient
 import io.github.jan.supabase.SupabaseClient
 import io.github.jan.supabase.gotrue.SessionStatus
+import io.github.jan.supabase.gotrue.authenticatedSupabaseApi
 import io.github.jan.supabase.gotrue.gotrue
 import io.github.jan.supabase.gotrue.providers.builtin.Email
 import javax.inject.Inject
@@ -17,6 +18,8 @@ class Signup @Inject constructor(
                 email = userEmail
                 password = userPassword
             }
+
+//        goTrueClient.aut
 
         return goTrueClient.gotrue.sessionStatus.value
 }

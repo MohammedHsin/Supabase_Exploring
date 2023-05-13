@@ -5,7 +5,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.example.supabaseexploring.presentation.login.LoginPage
-import com.example.supabaseexploring.presentation.newLogin.SignupScreen
+import com.example.supabaseexploring.presentation.signup.SignupScreen
 
 
 @Composable

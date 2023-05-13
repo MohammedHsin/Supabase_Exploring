@@ -28,6 +28,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.example.supabaseexploring.R
 import com.example.supabaseexploring.common.UIState
+import com.example.supabaseexploring.common.components.CircularProgressBar
 import com.example.supabaseexploring.ui.theme.primaryColor
 import com.example.supabaseexploring.ui.theme.whiteBackground
 import io.github.jan.supabase.gotrue.gotrue
@@ -44,6 +45,7 @@ fun LoginPage(
     val loginUIState by viewModel.loginUIState.collectAsState()
 
 
+
     LaunchedEffect(key1 = loginUIState){
         when(loginUIState){
 
@@ -52,6 +54,7 @@ fun LoginPage(
             }
             is UIState.Loading ->{
                 Log.d("hello", "LoginPage: loading")
+
             }
             is UIState.Error ->{
                 Log.d("hello", "LoginPage: ${(loginUIState as UIState.Error).message.toString()}")
@@ -64,8 +67,12 @@ fun LoginPage(
 
     LaunchedEffect(key1 = viewModel.goTrueClient){
 
-        if (viewModel.goTrueClient.gotrue.sessionStatus.value.toString().substring(0 ,13) == "Authenticated"){
-            Log.d("hello", "LoginPage: You are in ")
+
+        if (viewModel.getUserIfAny() != null){
+            Log.d("hello", "LoginPage: You are in  ..${viewModel.getUserIfAny()} ")
+        }
+        else{
+            Log.d("hello", "LoginPage: you are so out")
         }
     }
 
@@ -75,113 +82,118 @@ fun LoginPage(
 
     val passwordVisibility = remember { mutableStateOf(false) }
     val focusRequester = remember { FocusRequester() }
+    
+    Box(modifier = Modifier.fillMaxSize() , contentAlignment = Alignment.Center) {
 
-    Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.BottomCenter) {
-        Box(
-            modifier = Modifier
-                .fillMaxSize()
-                .background(Color.White), contentAlignment = Alignment.TopCenter
-        ) {
-            Image(painter = image, contentDescription = "")
-        }
+        Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.BottomCenter) {
+            Box(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .background(Color.White), contentAlignment = Alignment.TopCenter
+            ) {
+                Image(painter = image, contentDescription = "")
+            }
 
-        Column(
-            horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.Center,
-            modifier = Modifier
-                .fillMaxWidth()
-                .fillMaxHeight(0.60f)
-                .clip(RoundedCornerShape(topStart = 30.dp, topEnd = 30.dp))
-                .background(whiteBackground)
-                .padding(10.dp)
-                .verticalScroll(rememberScrollState())
-        ) {
+            Column(
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.Center,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .fillMaxHeight(0.60f)
+                    .clip(RoundedCornerShape(topStart = 30.dp, topEnd = 30.dp))
+                    .background(whiteBackground)
+                    .padding(10.dp)
+                    .verticalScroll(rememberScrollState())
+            ) {
 
-            Text(
-                text = "Sign In",
-                style = TextStyle(
-                    fontWeight = FontWeight.Bold,
-                    letterSpacing = 2.sp
-                ),
-                fontSize = 30.sp
-            )
-            Spacer(modifier = Modifier.padding(20.dp))
-            Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                OutlinedTextField(
-                    value = loginState.email,
-                    onValueChange = { viewModel.onEmailChange(it) },
-                    label = { Text(text = "Email Address") },
-                    placeholder = { Text(text = "Email Address") },
-                    singleLine = true,
-                    modifier = Modifier.fillMaxWidth(0.8f),
+
+                Text(
+                    text = "Sign In",
+                    style = TextStyle(
+                        fontWeight = FontWeight.Bold,
+                        letterSpacing = 2.sp
+                    ),
+                    fontSize = 30.sp
+                )
+                Spacer(modifier = Modifier.padding(20.dp))
+                Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                    OutlinedTextField(
+                        value = loginState.email,
+                        onValueChange = { viewModel.onEmailChange(it) },
+                        label = { Text(text = "Email Address") },
+                        placeholder = { Text(text = "Email Address") },
+                        singleLine = true,
+                        modifier = Modifier.fillMaxWidth(0.8f),
 //                        onImeActionPerformed = { _, _ ->
 //                            focusRequester.requestFocus()
 //                        }
-                )
+                    )
 
-                OutlinedTextField(
-                    value = loginState.password,
-                    onValueChange = {viewModel.onPasswordChange(it)},
-                    trailingIcon = {
-                        IconButton(onClick = {
-                            passwordVisibility.value = !passwordVisibility.value
-                        }) {
-                            Icon(
-                                painter = painterResource(id = R.drawable.password_eye),
-                                contentDescription = "",
-                                tint = if (passwordVisibility.value) primaryColor else Color.Gray
-                            )
-                        }
-                    },
-                    label = { Text("Password") },
-                    placeholder = { Text(text = "Password") },
-                    singleLine = true,
-                    visualTransformation = if (passwordVisibility.value) VisualTransformation.None
-                    else PasswordVisualTransformation(),
-                    modifier = Modifier
-                        .fillMaxWidth(0.8f)
-                        .focusRequester(focusRequester = focusRequester),
+                    OutlinedTextField(
+                        value = loginState.password,
+                        onValueChange = { viewModel.onPasswordChange(it) },
+                        trailingIcon = {
+                            IconButton(onClick = {
+                                passwordVisibility.value = !passwordVisibility.value
+                            }) {
+                                Icon(
+                                    painter = painterResource(id = R.drawable.password_eye),
+                                    contentDescription = "",
+                                    tint = if (passwordVisibility.value) primaryColor else Color.Gray
+                                )
+                            }
+                        },
+                        label = { Text("Password") },
+                        placeholder = { Text(text = "Password") },
+                        singleLine = true,
+                        visualTransformation = if (passwordVisibility.value) VisualTransformation.None
+                        else PasswordVisualTransformation(),
+                        modifier = Modifier
+                            .fillMaxWidth(0.8f)
+                            .focusRequester(focusRequester = focusRequester),
 //                        onImeActionPerformed = { _, controller ->
 //                            controller?.hideSoftwareKeyboard()
 //                        }
 
-                )
+                    )
 
-                Spacer(modifier = Modifier.padding(10.dp))
-                Button(
-                    onClick = {
-                              viewModel.onPerformLogin(
-                                  loginState.email,
-                                  loginState.password
-                              )
-                    },
-                    modifier = Modifier
-                        .fillMaxWidth(0.8f)
-                        .height(50.dp)
-                ) {
-                    Text(text = "Sign In", fontSize = 20.sp)
+                    Spacer(modifier = Modifier.padding(10.dp))
+                    Button(
+                        onClick = {
+                            viewModel.onPerformLogin(
+                                loginState.email,
+                                loginState.password
+                            )
+                        },
+                        modifier = Modifier
+                            .fillMaxWidth(0.8f)
+                            .height(50.dp)
+                    ) {
+                        Text(text = "Sign In", fontSize = 20.sp)
+                    }
+
+                    Spacer(modifier = Modifier.padding(20.dp))
+                    Text(
+                        text = "Create An Account",
+                        modifier = Modifier.clickable(onClick = {
+                            navController.navigate("signup") {
+                                launchSingleTop = true
+                            }
+                        })
+                    )
+                    Spacer(modifier = Modifier.padding(20.dp))
+
+                    Button(onClick = {
+                        Log.d("hello", viewModel.getUserIfAny().toString())
+                    }) {
+                        Text(text = "check authentication")
+                    }
                 }
 
-                Spacer(modifier = Modifier.padding(20.dp))
-                Text(
-                    text = "Create An Account",
-                    modifier = Modifier.clickable(onClick = {
-                        navController.navigate("signup") {
-                            launchSingleTop = true
-                        }
-                    })
-                )
-                Spacer(modifier = Modifier.padding(20.dp))
 
-                Button(onClick = {
-                    Log.d("hello", viewModel.isAuthenticated().toString())
-                }) {
-                    Text(text = "check authentication")
-                }
             }
-
-
         }
+    CircularProgressBar(isActivated = loginUIState is UIState.Loading)
+    
     }
-
 }

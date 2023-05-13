@@ -1,4 +1,4 @@
-package com.example.supabaseexploring.presentation.newLogin
+package com.example.supabaseexploring.presentation.signup
 
 
 import android.util.Log
@@ -17,12 +17,13 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
-import com.example.supabaseexploring.presentation.signup.SignupViewModel
 import com.example.supabaseexploring.common.UIState
+import com.example.supabaseexploring.common.components.CircularProgressBar
 import com.example.supabaseexploring.ui.theme.primaryColor
 import com.example.supabaseexploring.ui.theme.whiteBackground
 
@@ -38,17 +39,17 @@ viewModel: SignupViewModel = hiltViewModel()
     LaunchedEffect(key1 = signupUIState) {
         when (signupUIState) {
 
-            is UIState.Idle ->{
+            is UIState.Idle -> {
                 Log.d("hello", "nothing ..")
             }
 
             is UIState.Success -> {
                 Log.d("hello", "you sign up !")
             }
-            is UIState.Loading ->{
+            is UIState.Loading -> {
                 Log.d("hello", "Loading ...")
             }
-            is UIState.Error ->{
+            is UIState.Error -> {
                 Log.d("hello", (signupUIState as UIState.Error).message.toString())
             }
         }
@@ -60,28 +61,31 @@ viewModel: SignupViewModel = hiltViewModel()
     val confirmPasswordVisibility = remember { mutableStateOf(false) }
 
 
-    Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.BottomCenter) {
-        Box(
-            modifier = Modifier
-                .fillMaxSize()
-                .background(Color.White),
-            contentAlignment = Alignment.TopCenter
-        ) {
-            Image(painter = image, contentDescription = "")
-        }
+    Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
 
 
-        Column(
-            modifier = Modifier
-                .fillMaxWidth()
-                .fillMaxHeight(0.70f)
-                .clip(RoundedCornerShape(topEnd = 30.dp, topStart = 30.dp))
-                .background(whiteBackground)
-                .padding(10.dp)
-                .verticalScroll(rememberScrollState()),
-            horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.Center
-        ) {
+        Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.BottomCenter) {
+            Box(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .background(Color.White),
+                contentAlignment = Alignment.TopCenter
+            ) {
+                Image(painter = image, contentDescription = "")
+            }
+
+
+            Column(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .fillMaxHeight(0.70f)
+                    .clip(RoundedCornerShape(topEnd = 30.dp, topStart = 30.dp))
+                    .background(whiteBackground)
+                    .padding(10.dp)
+                    .verticalScroll(rememberScrollState()),
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.Center
+            ) {
 
                 Text(
                     text = "Sign Up", fontSize = 30.sp,
@@ -101,9 +105,11 @@ viewModel: SignupViewModel = hiltViewModel()
                         modifier = Modifier.fillMaxWidth(0.8f)
                     )
 
+
+
                     OutlinedTextField(
                         value = signupState.email,
-                        onValueChange = {viewModel.onEmailChange(it)},
+                        onValueChange = { viewModel.onEmailChange(it) },
                         label = { Text(text = "Email Address") },
                         placeholder = { Text(text = "Email Address") },
                         singleLine = true,
@@ -125,8 +131,11 @@ viewModel: SignupViewModel = hiltViewModel()
                             }) {
 //
 
-                                Icon(painter = painterResource(id =R.drawable.password_eye), contentDescription = "",
-                                tint =if (passwordVisibility.value) primaryColor else Color.Gray )
+                                Icon(
+                                    painter = painterResource(id = R.drawable.password_eye),
+                                    contentDescription = "",
+                                    tint = if (passwordVisibility.value) primaryColor else Color.Gray
+                                )
                             }
                         },
                         visualTransformation = if (passwordVisibility.value) VisualTransformation.None
@@ -155,13 +164,17 @@ viewModel: SignupViewModel = hiltViewModel()
                         else PasswordVisualTransformation()
                     )
                     Spacer(modifier = Modifier.padding(10.dp))
-                    Button(onClick = {
-                                     viewModel.performSignUp(signupState.email,
-                                     signupState.username,
-                                     signupState.password)
-                    }, modifier = Modifier
-                        .fillMaxWidth(0.8f)
-                        .height(50.dp)) {
+                    Button(
+                        onClick = {
+                            viewModel.performSignUp(
+                                signupState.email,
+                                signupState.username,
+                                signupState.password
+                            )
+                        }, modifier = Modifier
+                            .fillMaxWidth(0.8f)
+                            .height(50.dp)
+                    ) {
                         Text(text = "Sign Up", fontSize = 20.sp)
                     }
                     Spacer(modifier = Modifier.padding(10.dp))
@@ -169,7 +182,7 @@ viewModel: SignupViewModel = hiltViewModel()
                         text = "Login Instead",
                         modifier = Modifier.clickable(onClick = {
 
-                            navController.navigate("login"){
+                            navController.navigate("login") {
                                 launchSingleTop = true
                             }
 
@@ -182,8 +195,20 @@ viewModel: SignupViewModel = hiltViewModel()
                 }
 
             }
+
+
         }
+
+
+        CircularProgressBar(isActivated = signupUIState is UIState.Loading)
     }
+}
+
+@Composable
+@Preview
+fun pre(){
+    CircularProgressBar(isActivated = true)
+}
 
 
 
