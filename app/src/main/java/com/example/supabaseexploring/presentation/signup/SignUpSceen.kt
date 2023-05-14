@@ -1,6 +1,7 @@
 package com.example.supabaseexploring.presentation.signup
 
 
+import android.content.Context
 import android.util.Log
 import android.widget.Toast
 import androidx.compose.animation.core.animateFloatAsState
@@ -8,17 +9,23 @@ import androidx.compose.foundation.*
 import com.example.supabaseexploring.R
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.KeyboardActions
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.focus.FocusDirection
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.input.ImeAction
+import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.tooling.preview.Preview
@@ -29,6 +36,7 @@ import androidx.navigation.NavHostController
 import com.example.supabaseexploring.common.UIState
 import com.example.supabaseexploring.common.components.CircularProgressBar
 import com.example.supabaseexploring.presentation.common.LoadingAnimation
+import com.example.supabaseexploring.presentation.common.rememberImeState
 import com.example.supabaseexploring.ui.theme.primaryColor
 import com.example.supabaseexploring.ui.theme.whiteBackground
 import kotlin.math.sign
@@ -43,6 +51,9 @@ viewModel: SignupViewModel = hiltViewModel()
     val signupUIState by viewModel.signupUIState.collectAsState()
 
     val context = LocalContext.current
+    val scrollState = rememberScrollState()
+    val imeState = rememberImeState()
+    val localFocusManager = LocalFocusManager.current
 
     val alpha = animateFloatAsState(if (signupUIState is UIState.Loading) 0.5f else 1f)
 
@@ -96,7 +107,7 @@ viewModel: SignupViewModel = hiltViewModel()
                         .clip(RoundedCornerShape(topEnd = 30.dp, topStart = 30.dp))
                         .background(whiteBackground)
                         .padding(10.dp)
-                        .verticalScroll(rememberScrollState()),
+                        .verticalScroll(scrollState),
                     horizontalAlignment = Alignment.CenterHorizontally,
                     verticalArrangement = Arrangement.Center
                 ) {
@@ -117,7 +128,12 @@ viewModel: SignupViewModel = hiltViewModel()
                             label = { Text(text = "Username") },
                             placeholder = { Text(text = "Username") },
                             singleLine = true,
-                            modifier = Modifier.fillMaxWidth(0.8f)
+                            modifier = Modifier.fillMaxWidth(0.8f),
+                            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Text,
+                            imeAction = ImeAction.Next),
+                            keyboardActions = KeyboardActions(onNext = {
+                                localFocusManager.moveFocus(FocusDirection.Down)
+                            })
                         )
 
 
@@ -129,7 +145,12 @@ viewModel: SignupViewModel = hiltViewModel()
                             label = { Text(text = "Email Address") },
                             placeholder = { Text(text = "Email Address") },
                             singleLine = true,
-                            modifier = Modifier.fillMaxWidth(0.8f)
+                            modifier = Modifier.fillMaxWidth(0.8f) ,
+                            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email,
+                            imeAction = ImeAction.Next),
+                            keyboardActions = KeyboardActions(onNext = {
+                            localFocusManager.moveFocus(FocusDirection.Down)
+                        })
                         )
 
 
@@ -156,7 +177,13 @@ viewModel: SignupViewModel = hiltViewModel()
                                 }
                             },
                             visualTransformation = if (passwordVisibility.value) VisualTransformation.None
-                            else PasswordVisualTransformation()
+                            else PasswordVisualTransformation(),
+                            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password,
+                                imeAction = ImeAction.Next),
+                            keyboardActions = KeyboardActions(onNext = {
+                                localFocusManager.moveFocus(FocusDirection.Down)
+                            })
+
                         )
 
                         OutlinedTextField(
@@ -180,29 +207,24 @@ viewModel: SignupViewModel = hiltViewModel()
                                 }
                             },
                             visualTransformation = if (confirmPasswordVisibility.value) VisualTransformation.None
-                            else PasswordVisualTransformation()
+                            else PasswordVisualTransformation(),
+                            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password,
+                                imeAction = ImeAction.Done),
+                            keyboardActions = KeyboardActions(onDone = {
+                                signup(signupState, viewModel, context)
+                            })
+
                         )
+
+
+
                         Spacer(modifier = Modifier.padding(10.dp))
+
+
+
                         Button(
                             onClick = {
-                                if (
-                                    signupState.validEmail
-                                    && signupState.validPassword
-                                    && signupState.validRePassword
-                                    && signupState.validUsername
-                                ) {
-                                    viewModel.performSignUp(
-                                        signupState.email,
-                                        signupState.username,
-                                        signupState.password
-                                    )
-                                } else {
-                                    Toast.makeText(
-                                        context,
-                                        "invalid data!",
-                                        Toast.LENGTH_LONG
-                                    ).show()
-                                }
+                                signup(signupState, viewModel, context)
                             }, modifier = Modifier
                                 .fillMaxWidth(0.8f)
                                 .height(50.dp)
@@ -234,6 +256,31 @@ viewModel: SignupViewModel = hiltViewModel()
                LoadingAnimation()
            }
         }
+    }
+}
+
+private fun signup(
+    signupState: SignupState,
+    viewModel: SignupViewModel,
+    context: Context
+) {
+    if (
+        signupState.validEmail
+        && signupState.validPassword
+        && signupState.validRePassword
+        && signupState.validUsername
+    ) {
+        viewModel.performSignUp(
+            signupState.email,
+            signupState.username,
+            signupState.password
+        )
+    } else {
+        Toast.makeText(
+            context,
+            "invalid data!",
+            Toast.LENGTH_LONG
+        ).show()
     }
 }
 

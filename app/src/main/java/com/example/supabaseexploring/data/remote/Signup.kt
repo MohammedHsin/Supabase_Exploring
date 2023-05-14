@@ -14,13 +14,14 @@ class Signup @Inject constructor(
 ){
 
     suspend fun signup(userEmail : String , userPassword : String , username : String) : SessionStatus{
-        goTrueClient.gotrue.signUpWith(Email){
+        val i = goTrueClient.gotrue.signUpWith(Email){
                 email = userEmail
                 password = userPassword
             data = buildJsonObject {
                 put("username" , username)
             }
             }
+
 
 //        goTrueClient.aut
 
