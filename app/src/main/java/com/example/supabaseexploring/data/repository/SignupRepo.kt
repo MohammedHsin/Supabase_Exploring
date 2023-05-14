@@ -14,11 +14,11 @@ import javax.inject.Inject
 class SignupRepo @Inject constructor(
     private val signup : Signup
 ) {
-    operator fun invoke(email : String , password : String) : Flow<Resource<SessionStatus>> {
+    operator fun invoke(email : String , password : String , username : String) : Flow<Resource<SessionStatus>> {
         return flow {
             try {
                 emit(Resource.Loading<SessionStatus>())
-                val data = signup.signup(email , password)
+                val data = signup.signup(email , password , username)
                 emit(Resource.Success(data))
             }catch (e : Exception){
                 emit(Resource.Error(e.message.toString()))

@@ -48,7 +48,7 @@ class SignupViewModel @Inject constructor(
         //todo
 
 
-           signupRepo(userEmail , userPassword).onEach {result->
+           signupRepo(userEmail , userPassword , username).onEach {result->
 
                when(result){
                    is Resource.Error->{
