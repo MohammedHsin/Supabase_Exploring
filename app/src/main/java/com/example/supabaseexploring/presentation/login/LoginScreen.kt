@@ -4,6 +4,7 @@ package com.example.supabaseexploring.presentation.login
 import android.util.Log
 import android.widget.Toast
 import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -11,6 +12,7 @@ import androidx.compose.material.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
@@ -31,6 +33,7 @@ import androidx.navigation.NavController
 import com.example.supabaseexploring.R
 import com.example.supabaseexploring.common.UIState
 import com.example.supabaseexploring.common.components.CircularProgressBar
+import com.example.supabaseexploring.presentation.common.LoadingAnimation
 import com.example.supabaseexploring.ui.theme.primaryColor
 import com.example.supabaseexploring.ui.theme.whiteBackground
 import io.github.jan.supabase.gotrue.gotrue
@@ -49,6 +52,7 @@ fun LoginPage(
     val loginUIState by viewModel.loginUIState.collectAsState()
 
 
+    val alpha = animateFloatAsState(if (loginUIState is UIState.Loading) 0.5f else 1f)
 
     LaunchedEffect(key1 = loginUIState){
         when(loginUIState){
@@ -88,10 +92,13 @@ fun LoginPage(
 
     val passwordVisibility = remember { mutableStateOf(false) }
     val focusRequester = remember { FocusRequester() }
-    
+
+
     Box(modifier = Modifier.fillMaxSize() , contentAlignment = Alignment.Center) {
 
-        Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.BottomCenter) {
+        BoxWithConstraints(contentAlignment = Alignment.Center) {
+
+        Box(modifier = Modifier.fillMaxSize().alpha(alpha.value), contentAlignment = Alignment.BottomCenter) {
             Box(
                 modifier = Modifier
                     .fillMaxSize()
@@ -207,7 +214,11 @@ fun LoginPage(
 
             }
         }
-    CircularProgressBar(isActivated = loginUIState is UIState.Loading)
-    
+
+        if (loginUIState is UIState.Loading){
+            LoadingAnimation()
+        }
+
     }
+}
 }

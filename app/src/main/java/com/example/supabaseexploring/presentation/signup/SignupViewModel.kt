@@ -34,6 +34,7 @@ class SignupViewModel @Inject constructor(
     fun onPasswordChange(newPassword : String){
         _signupState.value = _signupState.value.copy(password = newPassword)
         validatePassword()
+        validateRePassword()
     }
 
     fun onConfirmPasswordChange(newPassword : String){
