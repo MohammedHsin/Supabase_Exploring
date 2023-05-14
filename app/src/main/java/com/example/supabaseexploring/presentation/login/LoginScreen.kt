@@ -3,6 +3,7 @@ package com.example.supabaseexploring.presentation.login
 
 import android.util.Log
 import android.widget.Toast
+import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -14,6 +15,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.imageResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.vectorResource
@@ -40,6 +42,8 @@ fun LoginPage(
     viewModel: LoginViewModel = hiltViewModel()
 ) {
 
+
+    val context = LocalContext.current
 
     val loginState by viewModel.loginState.collectAsState()
     val loginUIState by viewModel.loginUIState.collectAsState()
@@ -75,6 +79,8 @@ fun LoginPage(
             Log.d("hello", "LoginPage: you are so out")
         }
     }
+
+
 
 
     val image = painterResource(id = R.drawable.login_image)
@@ -118,6 +124,7 @@ fun LoginPage(
                 Spacer(modifier = Modifier.padding(20.dp))
                 Column(horizontalAlignment = Alignment.CenterHorizontally) {
                     OutlinedTextField(
+                        isError = !loginState.validEmail && loginState.email.isNotBlank(),
                         value = loginState.email,
                         onValueChange = { viewModel.onEmailChange(it) },
                         label = { Text(text = "Email Address") },
@@ -129,7 +136,9 @@ fun LoginPage(
 //                        }
                     )
 
+
                     OutlinedTextField(
+                        isError = !loginState.validPassword && loginState.password.isNotBlank(),
                         value = loginState.password,
                         onValueChange = { viewModel.onPasswordChange(it) },
                         trailingIcon = {
@@ -151,19 +160,24 @@ fun LoginPage(
                         modifier = Modifier
                             .fillMaxWidth(0.8f)
                             .focusRequester(focusRequester = focusRequester),
-//                        onImeActionPerformed = { _, controller ->
-//                            controller?.hideSoftwareKeyboard()
-//                        }
-
                     )
+
 
                     Spacer(modifier = Modifier.padding(10.dp))
                     Button(
                         onClick = {
-                            viewModel.onPerformLogin(
-                                loginState.email,
-                                loginState.password
-                            )
+                            if (loginState.validEmail && loginState.validPassword) {
+                                viewModel.onPerformLogin(
+                                    loginState.email,
+                                    loginState.password
+                                )
+                            }else{
+                                Toast.makeText(
+                                    context,
+                                    "invalid data! please check your email and password",
+                                    Toast.LENGTH_LONG
+                                ).show()
+                            }
                         },
                         modifier = Modifier
                             .fillMaxWidth(0.8f)
@@ -183,7 +197,7 @@ fun LoginPage(
                     )
                     Spacer(modifier = Modifier.padding(20.dp))
 
-                    Button(onClick = {
+                    Button( onClick = {
                         Log.d("hello", viewModel.getUserIfAny().toString())
                     }) {
                         Text(text = "check authentication")

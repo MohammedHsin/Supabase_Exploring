@@ -2,6 +2,7 @@ package com.example.supabaseexploring.presentation.signup
 
 
 import android.util.Log
+import android.widget.Toast
 import androidx.compose.foundation.*
 import com.example.supabaseexploring.R
 import androidx.compose.foundation.layout.*
@@ -12,6 +13,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
@@ -26,6 +28,7 @@ import com.example.supabaseexploring.common.UIState
 import com.example.supabaseexploring.common.components.CircularProgressBar
 import com.example.supabaseexploring.ui.theme.primaryColor
 import com.example.supabaseexploring.ui.theme.whiteBackground
+import kotlin.math.sign
 
 @Composable
 fun SignupScreen(
@@ -35,6 +38,8 @@ viewModel: SignupViewModel = hiltViewModel()
 
     val signupState by viewModel.signupState.collectAsState()
     val signupUIState by viewModel.signupUIState.collectAsState()
+
+    val context = LocalContext.current
 
     LaunchedEffect(key1 = signupUIState) {
         when (signupUIState) {
@@ -97,6 +102,7 @@ viewModel: SignupViewModel = hiltViewModel()
                 Spacer(modifier = Modifier.padding(10.dp))
                 Column(horizontalAlignment = Alignment.CenterHorizontally) {
                     OutlinedTextField(
+                        isError = !signupState.validUsername && signupState.username.isNotBlank(),
                         value = signupState.username,
                         onValueChange = { viewModel.onUsernameChange(it) },
                         label = { Text(text = "Username") },
@@ -108,6 +114,7 @@ viewModel: SignupViewModel = hiltViewModel()
 
 
                     OutlinedTextField(
+                        isError = !signupState.validEmail && signupState.email.isNotBlank(),
                         value = signupState.email,
                         onValueChange = { viewModel.onEmailChange(it) },
                         label = { Text(text = "Email Address") },
@@ -119,6 +126,7 @@ viewModel: SignupViewModel = hiltViewModel()
 
 
                     OutlinedTextField(
+                        isError = !signupState.validPassword && signupState.password.isNotBlank(),
                         value = signupState.password,
                         onValueChange = { viewModel.onPasswordChange(it) },
                         label = { Text(text = "Password") },
@@ -143,6 +151,7 @@ viewModel: SignupViewModel = hiltViewModel()
                     )
 
                     OutlinedTextField(
+                        isError = !signupState.validRePassword && signupState.confirmPassword.isNotBlank(),
                         value = signupState.confirmPassword,
                         onValueChange = { viewModel.onConfirmPasswordChange(it) },
                         label = { Text(text = "Confirm Password") },
@@ -166,11 +175,23 @@ viewModel: SignupViewModel = hiltViewModel()
                     Spacer(modifier = Modifier.padding(10.dp))
                     Button(
                         onClick = {
+                            if(
+                                signupState.validEmail
+                                && signupState.validPassword
+                                && signupState.validRePassword
+                                && signupState.validUsername){
                             viewModel.performSignUp(
                                 signupState.email,
                                 signupState.username,
                                 signupState.password
                             )
+                            }else{
+                                Toast.makeText(
+                                    context,
+                                    "invalid data!",
+                                    Toast.LENGTH_LONG
+                                ).show()
+                            }
                         }, modifier = Modifier
                             .fillMaxWidth(0.8f)
                             .height(50.dp)

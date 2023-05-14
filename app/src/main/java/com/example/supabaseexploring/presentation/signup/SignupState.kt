@@ -5,4 +5,8 @@ data class SignupState(
     val password : String = "",
     val confirmPassword : String = "",
     val email : String = "",
+    val validEmail : Boolean =false,
+    val validPassword: Boolean = false,
+    val validRePassword : Boolean =false,
+    val validUsername : Boolean = false
 )

@@ -1,6 +1,5 @@
 package com.example.supabaseexploring.presentation.signup
 
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.supabaseexploring.common.Resource
@@ -18,24 +17,28 @@ class SignupViewModel @Inject constructor(
     val signupUIState = _signupUIState.asStateFlow()
 
 
-    private val _singupState = MutableStateFlow<SignupState>(SignupState())
-    val signupState = _singupState.asStateFlow()
+    private val _signupState = MutableStateFlow<SignupState>(SignupState())
+    val signupState = _signupState.asStateFlow()
 
 
     fun onUsernameChange(newUsername : String){
-        _singupState.value = _singupState.value.copy(username = newUsername)
+        _signupState.value = _signupState.value.copy(username = newUsername)
+        validateUsername()
     }
 
     fun onEmailChange(newEmail : String){
-        _singupState.value = _singupState.value.copy(email = newEmail)
+        _signupState.value = _signupState.value.copy(email = newEmail)
+        validateEmail()
     }
 
     fun onPasswordChange(newPassword : String){
-        _singupState.value = _singupState.value.copy(password = newPassword)
+        _signupState.value = _signupState.value.copy(password = newPassword)
+        validatePassword()
     }
 
     fun onConfirmPasswordChange(newPassword : String){
-        _singupState.value = _singupState.value.copy(confirmPassword = newPassword)
+        _signupState.value = _signupState.value.copy(confirmPassword = newPassword)
+        validateRePassword()
     }
 
 
@@ -64,5 +67,26 @@ class SignupViewModel @Inject constructor(
            }.launchIn(viewModelScope)
 
 
+    }
+
+    fun validateEmail(){
+        val emailRegex = Regex("^[A-Za-z](.*)([@]{1})(.{1,})(\\.)(.{1,})")
+        _signupState.update { _signupState.value.copy(validEmail = emailRegex.matches(_signupState.value.email)) }
+    }
+
+
+
+    fun validatePassword(){
+        val passwordRegex = Regex("^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[@#$%^&+=])(?=\\S+$).{8,}$")
+        _signupState.update { _signupState.value.copy(validPassword = passwordRegex.matches(_signupState.value.password)) }
+    }
+
+    fun validateRePassword(){
+        _signupState.update { _signupState.value.copy(validRePassword = _signupState.value.password == _signupState.value.confirmPassword) }
+    }
+
+    fun validateUsername() {
+        val regex = Regex("^[a-zA-Z0-9]+([a-zA-Z0-9](_|-| )[a-zA-Z0-9])*[a-zA-Z0-9]+$")
+        _signupState.update { _signupState.value.copy(validUsername =  regex.matches(_signupState.value.username)) }
     }
 }

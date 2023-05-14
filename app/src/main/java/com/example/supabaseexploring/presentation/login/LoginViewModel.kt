@@ -11,10 +11,7 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import io.github.jan.supabase.SupabaseClient
 import io.github.jan.supabase.gotrue.gotrue
 import io.github.jan.supabase.gotrue.user.UserInfo
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.launchIn
-import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.flow.*
 import javax.inject.Inject
 
 @HiltViewModel
@@ -40,10 +37,12 @@ class LoginViewModel @Inject constructor(
 
     fun onEmailChange(newEmail : String){
         _loginState.value = _loginState.value.copy(email = newEmail)
+        validateEmail()
     }
 
     fun onPasswordChange(newPassword : String){
         _loginState.value = _loginState.value.copy(password = newPassword)
+        validPassword()
     }
 
     fun onPerformLogin(userEmail : String , userPassword : String){
@@ -64,6 +63,21 @@ class LoginViewModel @Inject constructor(
 
         }.launchIn(viewModelScope)
     }
+
+
+
+    fun validateEmail() {
+        val emailRegex = Regex("^[A-Za-z](.*)([@]{1})(.{1,})(\\.)(.{1,})")
+        _loginState.update {   _loginState.value.copy(validEmail = emailRegex.matches(_loginState.value.email))}
+    }
+
+    fun validPassword(){
+        val passwordRegex = Regex("^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[@#$%^&+=])(?=\\S+$).{8,}$")
+        _loginState.update {  _loginState.value.copy(validPassword = passwordRegex.matches(_loginState.value.password))}
+    }
+
+
+
 }
 
 
